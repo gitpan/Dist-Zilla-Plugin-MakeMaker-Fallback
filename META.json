@@ -45,7 +45,7 @@
       },
       "runtime" : {
          "requires" : {
-            "Dist::Zilla::Plugin::MakeMaker::Awesome" : "0",
+            "Dist::Zilla::Plugin::MakeMaker::Awesome" : "0.13",
             "Dist::Zilla::Role::BeforeBuild" : "0",
             "Moose" : "0",
             "namespace::autoclean" : "0",
@@ -57,10 +57,13 @@
       "test" : {
          "requires" : {
             "Dist::Zilla::Plugin::ModuleBuildTiny" : "0",
+            "ExtUtils::MakeMaker" : "0",
             "File::Find" : "0",
             "File::Spec" : "0",
+            "File::Spec::Functions" : "0",
             "IO::Handle" : "0",
             "IPC::Open3" : "0",
+            "List::Util" : "0",
             "Path::Tiny" : "0",
             "Test::CheckDeps" : "0.007",
             "Test::DZil" : "0",
@@ -74,7 +77,7 @@
    "provides" : {
       "Dist::Zilla::Plugin::MakeMaker::Fallback" : {
          "file" : "lib/Dist/Zilla/Plugin/MakeMaker/Fallback.pm",
-         "version" : "0.001"
+         "version" : "0.002"
       }
    },
    "release_status" : "stable",
@@ -90,10 +93,10 @@
          "web" : "https://github.com/karenetheridge/Dist-Zilla-Plugin-MakeMaker-Fallback"
       }
    },
-   "version" : "0.001",
+   "version" : "0.002",
    "x_Dist_Zilla" : {
       "perl" : {
-         "version" : "5.019003"
+         "version" : "5.019004"
       },
       "plugins" : [
          {
@@ -102,11 +105,12 @@
                "Dist::Zilla::Role::Bootstrap" : {
                   "distname" : "Dist-Zilla-Plugin-MakeMaker-Fallback",
                   "fallback" : "1",
-                  "try_built" : null
+                  "try_built" : null,
+                  "try_built_method" : "mtime"
                }
             },
             "name" : "Bootstrap::lib",
-            "version" : "0.04000000"
+            "version" : "0.04000001"
          },
          {
             "class" : "Dist::Zilla::Plugin::MakeMaker::Fallback",
@@ -131,12 +135,12 @@
          {
             "class" : "Dist::Zilla::Plugin::PromptIfStale",
             "name" : "@Author::ETHER/build",
-            "version" : "0.005"
+            "version" : "0.006"
          },
          {
             "class" : "Dist::Zilla::Plugin::PromptIfStale",
             "name" : "@Author::ETHER/release",
-            "version" : "0.005"
+            "version" : "0.006"
          },
          {
             "class" : "Dist::Zilla::Plugin::ExecDir",
@@ -284,6 +288,11 @@
             "class" : "Dist::Zilla::Plugin::MojibakeTests",
             "name" : "@Author::ETHER/MojibakeTests",
             "version" : "0.5"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Test::ReportPrereqs",
+            "name" : "@Author::ETHER/Test::ReportPrereqs",
+            "version" : "0.006"
          },
          {
             "class" : "Dist::Zilla::Plugin::PruneCruft",

@@ -5,15 +5,15 @@ BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
 {
-  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.001';
+  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.002';
 }
-# git description: c8ad4da
+# git description: v0.001-3-g137e4b7
 
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # vim: set ts=8 sw=4 tw=78 et :
 
 use Moose;
-extends 'Dist::Zilla::Plugin::MakeMaker::Awesome';
+extends 'Dist::Zilla::Plugin::MakeMaker::Awesome' => { -version => '0.13' };
 with 'Dist::Zilla::Role::BeforeBuild';
 use namespace::autoclean;
 
@@ -63,7 +63,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -80,6 +80,10 @@ This plugin is a derivative of C<[MakeMaker]>, generating a F<Makefile.PL> in
 your dist, with an added preamble that is printed when it is run:
 
 =over 4
+
+=for Pod::Coverage before_build build test
+
+=for comment This section was inserted from the DATA section at build time
 
 *** WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING ***
 
@@ -106,13 +110,11 @@ Gang, the irc.perl.org #toolchain IRC channel, and the number 42.
 
 =back
 
-=for Pod::Coverage before_build build test
-
 Additionally, the C<build> and C<test> functionalities of the plugin
 (C<< perl Makefile.PL && make >> and C<< make test >> respectively) are disabled.
 
 It is a fatal error to use this plugin when there is not also another
-C<InstallTool> plugin installed (for example, C<[ModuleBuildTiny]>, that must
+C<InstallTool> plugin installed (for example, C<[ModuleBuildTiny]>), that must
 not also generate a F<Makefile.PL>.
 
 =head1 SUPPORT

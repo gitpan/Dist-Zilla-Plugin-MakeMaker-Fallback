@@ -52,7 +52,7 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Dist::Zilla::Plugin::MakeMaker::Fallback",
   "PREREQ_PM" => {
-    "Dist::Zilla::Plugin::MakeMaker::Awesome" => 0,
+    "Dist::Zilla::Plugin::MakeMaker::Awesome" => "0.13",
     "Dist::Zilla::Role::BeforeBuild" => 0,
     "Moose" => 0,
     "namespace::autoclean" => 0,
@@ -61,10 +61,13 @@ my %WriteMakefileArgs = (
   },
   "TEST_REQUIRES" => {
     "Dist::Zilla::Plugin::ModuleBuildTiny" => 0,
+    "ExtUtils::MakeMaker" => 0,
     "File::Find" => 0,
     "File::Spec" => 0,
+    "File::Spec::Functions" => 0,
     "IO::Handle" => 0,
     "IPC::Open3" => 0,
+    "List::Util" => 0,
     "Path::Tiny" => 0,
     "Test::CheckDeps" => "0.007",
     "Test::DZil" => 0,
@@ -73,7 +76,7 @@ my %WriteMakefileArgs = (
     "Test::More" => "0.94",
     "if" => 0
   },
-  "VERSION" => "0.001",
+  "VERSION" => "0.002",
   "test" => {
     "TESTS" => "t/*.t"
   }
