@@ -5,9 +5,9 @@ BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
 {
-  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.002';
+  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.003';
 }
-# git description: v0.001-3-g137e4b7
+# git description: v0.002-4-g5b86cfd
 
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # vim: set ts=8 sw=4 tw=78 et :
@@ -15,6 +15,8 @@ BEGIN {
 use Moose;
 extends 'Dist::Zilla::Plugin::MakeMaker::Awesome' => { -version => '0.13' };
 with 'Dist::Zilla::Role::BeforeBuild';
+
+use version;
 use namespace::autoclean;
 
 sub before_build
@@ -30,10 +32,48 @@ around _build_MakeFile_PL_template => sub
     my $orig = shift;
     my $self = shift;
 
-    return "warn <<'EOW';\n\n"
+    my $configure_requires = $self->zilla->prereqs->as_string_hash->{configure}{requires};
+
+    # prereq specifications don't always provide exact versions - we just weed
+    # those out for now, as this shouldn't occur that frequently.
+    my %check_modules = map {
+        version::is_strict($configure_requires->{$_})
+            ? ($_ => $configure_requires->{$_})
+            : ()
+    } keys %$configure_requires;
+
+    my $code = <<'CODE'
+BEGIN {
+my %configure_requires = (
+CODE
+        . join('', map {
+                $configure_requires->{$_} !~ m/[^0-9.]/
+                    ? "    '$_' => '$configure_requires->{$_}',\n"
+                    : ()
+            } keys %$configure_requires)
+    . <<'CODE'
+);
+
+my @missing = grep {
+    ! eval "require $_; $_->VERSION($configure_requires{$_}); 1"
+} keys %configure_requires;
+
+if (not @missing)
+{
+    print "Congratulations, your toolchain understands 'configure_requires'!\n\n";
+}
+else
+{
+    warn <<'EOW';
+CODE
         . join('', <DATA>)
-        . "\nEOW\n\nsleep 10 if -t STDIN;\n\n"
-        . $self->$orig(@_);
+        . "\nEOW\n\n    sleep 10 if -t STDIN;\n}\n}\n\n";
+
+    my $string = $self->$orig(@_);
+
+    # splice in our stuff after the preamble bits
+    $string =~ m/use warnings;\n\n/g;
+    return substr($string, 0, pos($string)) . $code . substr($string, pos($string));
 };
 
 sub build
@@ -63,7 +103,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
@@ -131,6 +171,8 @@ were shipping with install tools that did not work out of the box with perls
 
 Matt Trout (mst), for realizing a simple warning would be sufficient, rather
 than a complicated detection heuristic, as well as the text of the warning
+(but it turns out that we still need a I<simple> detection heuristic, so -0.5
+for that...)
 
 =head1 SEE ALSO
 
