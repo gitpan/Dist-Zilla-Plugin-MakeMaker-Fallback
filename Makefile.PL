@@ -47,7 +47,7 @@ Gang, the irc.perl.org #toolchain IRC channel, and the number 42.
 
 EOW
 
-    sleep 10 if -t STDIN;
+    sleep 10 if -t STDIN && (-t STDOUT || !(-f STDOUT || -c STDOUT));
 }
 }
 
@@ -92,7 +92,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "if" => 0
   },
-  "VERSION" => "0.003",
+  "VERSION" => "0.004",
   "test" => {
     "TESTS" => "t/*.t"
   }

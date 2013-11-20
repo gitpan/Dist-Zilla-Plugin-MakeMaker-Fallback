@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 package Dist::Zilla::Plugin::MakeMaker::Fallback;
+{
+  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.004';
+}
+# git description: v0.003-5-g1f4a709
+
 BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
-{
-  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.003';
-}
-# git description: v0.002-4-g5b86cfd
-
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # vim: set ts=8 sw=4 tw=78 et :
 
@@ -38,7 +38,7 @@ around _build_MakeFile_PL_template => sub
     # those out for now, as this shouldn't occur that frequently.
     my %check_modules = map {
         version::is_strict($configure_requires->{$_})
-            ? ($_ => $configure_requires->{$_})
+            ? ( $_ => $configure_requires->{$_} )
             : ()
     } keys %$configure_requires;
 
@@ -47,9 +47,7 @@ BEGIN {
 my %configure_requires = (
 CODE
         . join('', map {
-                $configure_requires->{$_} !~ m/[^0-9.]/
-                    ? "    '$_' => '$configure_requires->{$_}',\n"
-                    : ()
+                "    '$_' => '$configure_requires->{$_}',\n"
             } keys %$configure_requires)
     . <<'CODE'
 );
@@ -67,7 +65,7 @@ else
     warn <<'EOW';
 CODE
         . join('', <DATA>)
-        . "\nEOW\n\n    sleep 10 if -t STDIN;\n}\n}\n\n";
+        . "\nEOW\n\n    sleep 10 if -t STDIN && (-t STDOUT || !(-f STDOUT || -c STDOUT));\n}\n}\n\n";
 
     my $string = $self->$orig(@_);
 
@@ -92,7 +90,7 @@ __PACKAGE__->meta->make_immutable;
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =for :stopwords Karen Etheridge functionalities irc Peter Rabbitson ribasushi Matt Trout
 mst cpanminus
@@ -103,7 +101,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -111,8 +109,8 @@ In your F<dist.ini>, when you want to ship a F<Build.PL> as well as a fallback
 F<Makefile.PL> in case the user's C<cpan> client is so old it doesn't recognize
 C<configure_requires>:
 
-    [MakeMaker::Fallback]
     [ModuleBuildTiny]
+    [MakeMaker::Fallback]
 
 =head1 DESCRIPTION
 
