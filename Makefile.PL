@@ -21,10 +21,10 @@ if (not @missing)
 }
 else
 {
-    warn <<'EOW';
+    $ENV{PERL_MM_FALLBACK_SILENCE_WARNING} or warn <<'EOW';
 *** WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING ***
 
-If you're seeing this warning, your toolchain is really, really old and you'll
+If you're seeing this warning, your toolchain is really, really old* and you'll
 almost certainly have problems installing CPAN modules from this century. But
 never fear, dear user, for we have the technology to fix this!
 
@@ -44,6 +44,15 @@ when present instead.
 
 This public service announcement was brought to you by the Perl Toolchain
 Gang, the irc.perl.org #toolchain IRC channel, and the number 42.
+
+----
+
+* Alternatively, you are doing something overly clever, in which case you
+should consider setting the 'prefer_installer' config option in CPAN.pm, or
+'prefer_makefile' in CPANPLUS, to 'mb" and '0' respectively.
+
+You can also silence this warning for future installations by setting the
+PERL_MM_FALLBACK_SILENCE_WARNING environment variable.
 
 EOW
 
@@ -71,7 +80,7 @@ my %WriteMakefileArgs = (
   "NAME" => "Dist::Zilla::Plugin::MakeMaker::Fallback",
   "PREREQ_PM" => {
     "Dist::Zilla::Plugin::MakeMaker::Awesome" => "0.13",
-    "Dist::Zilla::Role::BeforeBuild" => 0,
+    "Dist::Zilla::Role::AfterBuild" => 0,
     "Moose" => 0,
     "namespace::autoclean" => 0,
     "strict" => 0,
@@ -80,6 +89,7 @@ my %WriteMakefileArgs = (
   },
   "TEST_REQUIRES" => {
     "Dist::Zilla::Plugin::ModuleBuildTiny" => 0,
+    "Dist::Zilla::Role::InstallTool" => 0,
     "ExtUtils::MakeMaker" => 0,
     "File::Find" => 0,
     "File::Spec" => 0,
@@ -92,7 +102,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "if" => 0
   },
-  "VERSION" => "0.004",
+  "VERSION" => "0.005",
   "test" => {
     "TESTS" => "t/*.t"
   }

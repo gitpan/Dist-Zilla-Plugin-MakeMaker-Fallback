@@ -11,12 +11,20 @@ use File::Find;
 use File::Spec;
 
 {
+    package Dist::Zilla::Plugin::BogusInstaller;
+    use Moose;
+    with 'Dist::Zilla::Role::InstallTool';
+    sub setup_installer { }
+}
+
+{
     my $tzil = Builder->from_config(
         { dist_root => 't/does_not_exist' },
         {
             add_files => {
                 'source/dist.ini' => simple_ini(
-                    [ 'MakeMaker::Fallback' ],
+                    'BogusInstaller',
+                    'MakeMaker::Fallback',
                 ),
             },
         },
@@ -24,7 +32,7 @@ use File::Spec;
 
     like(
         exception { $tzil->build },
-        qr/\Q[MakeMaker::Fallback] another InstallTool plugin is required!\E/,
+        qr/\Q[MakeMaker::Fallback] No Build.PL found to fall back from!\E/,
         'build aborted when no additional installer is provided',
     );
 }

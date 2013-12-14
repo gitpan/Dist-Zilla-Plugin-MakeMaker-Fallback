@@ -16,7 +16,8 @@ my @modules = qw(
   CPAN::Meta::Requirements
   Dist::Zilla::Plugin::MakeMaker::Awesome
   Dist::Zilla::Plugin::ModuleBuildTiny
-  Dist::Zilla::Role::BeforeBuild
+  Dist::Zilla::Role::AfterBuild
+  Dist::Zilla::Role::InstallTool
   ExtUtils::MakeMaker
   File::Find
   File::Spec

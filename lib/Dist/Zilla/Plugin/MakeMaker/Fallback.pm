@@ -2,9 +2,9 @@ use strict;
 use warnings;
 package Dist::Zilla::Plugin::MakeMaker::Fallback;
 {
-  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.004';
+  $Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.005';
 }
-# git description: v0.003-5-g1f4a709
+# git description: v0.004-5-g5a43502
 
 BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
@@ -14,17 +14,17 @@ BEGIN {
 
 use Moose;
 extends 'Dist::Zilla::Plugin::MakeMaker::Awesome' => { -version => '0.13' };
-with 'Dist::Zilla::Role::BeforeBuild';
+with 'Dist::Zilla::Role::AfterBuild';
 
 use version;
 use namespace::autoclean;
 
-sub before_build
+sub after_build
 {
     my $self = shift;
 
-    my @installers = @{$self->zilla->plugins_with(-InstallTool)};
-    @installers > 1 or $self->log_fatal('another InstallTool plugin is required!');
+    my @installers = grep { $_->name eq 'Makefile.PL' or $_->name eq 'Build.PL' } @{ $self->zilla->files };
+    @installers > 1 or $self->log_fatal('No Build.PL found to fall back from!');
 }
 
 around _build_MakeFile_PL_template => sub
@@ -62,7 +62,7 @@ if (not @missing)
 }
 else
 {
-    warn <<'EOW';
+    $ENV{PERL_MM_FALLBACK_SILENCE_WARNING} or warn <<'EOW';
 CODE
         . join('', <DATA>)
         . "\nEOW\n\n    sleep 10 if -t STDIN && (-t STDOUT || !(-f STDOUT || -c STDOUT));\n}\n}\n\n";
@@ -93,7 +93,7 @@ __PACKAGE__->meta->make_immutable;
 =encoding UTF-8
 
 =for :stopwords Karen Etheridge functionalities irc Peter Rabbitson ribasushi Matt Trout
-mst cpanminus
+mst cpanminus mb
 
 =head1 NAME
 
@@ -101,7 +101,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 
@@ -119,13 +119,13 @@ your dist, with an added preamble that is printed when it is run:
 
 =over 4
 
-=for Pod::Coverage before_build build test
+=for Pod::Coverage after_build build test
 
 =for comment This section was inserted from the DATA section at build time
 
 *** WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING ***
 
-If you're seeing this warning, your toolchain is really, really old and you'll
+If you're seeing this warning, your toolchain is really, really old* and you'll
 almost certainly have problems installing CPAN modules from this century. But
 never fear, dear user, for we have the technology to fix this!
 
@@ -145,6 +145,15 @@ when present instead.
 
 This public service announcement was brought to you by the Perl Toolchain
 Gang, the irc.perl.org #toolchain IRC channel, and the number 42.
+
+----
+
+* Alternatively, you are doing something overly clever, in which case you
+should consider setting the 'prefer_installer' config option in CPAN.pm, or
+'prefer_makefile' in CPANPLUS, to 'mb" and '0' respectively.
+
+You can also silence this warning for future installations by setting the
+PERL_MM_FALLBACK_SILENCE_WARNING environment variable.
 
 =back
 
@@ -198,7 +207,7 @@ the same terms as the Perl 5 programming language system itself.
 __DATA__
 *** WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING ***
 
-If you're seeing this warning, your toolchain is really, really old and you'll
+If you're seeing this warning, your toolchain is really, really old* and you'll
 almost certainly have problems installing CPAN modules from this century. But
 never fear, dear user, for we have the technology to fix this!
 
@@ -218,3 +227,12 @@ when present instead.
 
 This public service announcement was brought to you by the Perl Toolchain
 Gang, the irc.perl.org #toolchain IRC channel, and the number 42.
+
+----
+
+* Alternatively, you are doing something overly clever, in which case you
+should consider setting the 'prefer_installer' config option in CPAN.pm, or
+'prefer_makefile' in CPANPLUS, to 'mb" and '0' respectively.
+
+You can also silence this warning for future installations by setting the
+PERL_MM_FALLBACK_SILENCE_WARNING environment variable.
