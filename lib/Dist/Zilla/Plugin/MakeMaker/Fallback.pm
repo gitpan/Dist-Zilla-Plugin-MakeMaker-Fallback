@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::MakeMaker::Fallback;
 BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.005-7-g45cf6d2
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.006';
+# git description: v0.006-7-g9f8cd0e
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.007';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # vim: set ts=8 sw=4 tw=78 et :
 
@@ -13,6 +13,7 @@ use Moose;
 extends 'Dist::Zilla::Plugin::MakeMaker::Awesome' => { -version => '0.13' };
 with 'Dist::Zilla::Role::AfterBuild';
 
+use List::Util 'first';
 use version;
 use namespace::autoclean;
 
@@ -24,7 +25,7 @@ use namespace::autoclean;
 #
 #    my $config = $self->$orig;
 #
-#    $config->{'' . __PACKAGE__} = {
+#    $config->{+__PACKAGE__} = {
 #        # ...
 #    };
 #
@@ -35,8 +36,12 @@ sub after_build
 {
     my $self = shift;
 
-    my @installers = grep { $_->name eq 'Makefile.PL' or $_->name eq 'Build.PL' } @{ $self->zilla->files };
-    @installers > 1 or $self->log_fatal('No Build.PL found to fall back from!');
+    # if Makefile.PL is missing, someone removed it (probably a bad thing)
+    my $makefile_pl = first { $_->name eq 'Makefile.PL' } @{ $self->zilla->files };
+    $self->log_fatal('No Makefile.PL found -- did you remove it!?') if not $makefile_pl;
+
+    my $build_pl = first { $_->name eq 'Build.PL' } @{ $self->zilla->files };
+    $self->log_fatal('No Build.PL found to fall back from!') if not $build_pl;
 }
 
 around _build_MakeFile_PL_template => sub
@@ -82,15 +87,21 @@ CODE
     return substr($string, 0, pos($string)) . $code . substr($string, pos($string));
 };
 
-sub build
-{
-    my $self = shift;
-    $self->log_debug('doing nothing during build...');
-}
-
 sub test
 {
     my $self = shift;
+
+    if ($ENV{RELEASE_TESTING})
+    {
+        # we are either performing a 'dzil test' with RELEASE_TESTING set, or
+        # a 'dzil release' -- the Build.PL plugin will run tests with extra
+        # variables set, so as an extra check, we will perform them without.
+
+        local $ENV{RELEASE_TESTING};
+        local $ENV{AUTHOR_TESTING};
+        return $self->next::method(@_);
+    }
+
     $self->log_debug('doing nothing during test...');
 }
 
@@ -210,7 +221,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.006
+version 0.007
 
 =head1 SYNOPSIS
 

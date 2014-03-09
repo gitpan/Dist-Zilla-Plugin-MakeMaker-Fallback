@@ -46,23 +46,24 @@ my $static_prereqs = do { my $x = {
        'configure' => {
                         'requires' => {
                                         'ExtUtils::MakeMaker' => '6.30',
-                                        'Module::Build::Tiny' => '0.034'
+                                        'Module::Build::Tiny' => '0.035'
                                       }
                       },
        'develop' => {
                       'recommends' => {
-                                        'Dist::Zilla::PluginBundle::Author::ETHER' => '0.048'
+                                        'Dist::Zilla::PluginBundle::Author::ETHER' => '0.052'
                                       },
                       'requires' => {
-                                      'Dist::Zilla' => '5.012',
+                                      'Dist::Zilla' => '5.013',
                                       'Dist::Zilla::Plugin::Bootstrap::lib' => '0',
                                       'Dist::Zilla::Plugin::GitHub::Update' => '0',
                                       'Dist::Zilla::Plugin::GithubMeta' => '0',
                                       'Dist::Zilla::Plugin::MakeMaker::Fallback' => '0',
                                       'Dist::Zilla::Plugin::MetaResources' => '0',
                                       'Dist::Zilla::Plugin::ModuleBuildTiny' => '0',
-                                      'Dist::Zilla::Plugin::MungeFile::WithData' => '0.003',
+                                      'Dist::Zilla::Plugin::MungeFile::WithDataSection' => '0.003',
                                       'Dist::Zilla::Plugin::Prereqs' => '0',
+                                      'Dist::Zilla::Plugin::Test::CleanNamespaces' => '0',
                                       'Dist::Zilla::PluginBundle::Author::ETHER' => '0.024',
                                       'File::Spec' => '0',
                                       'IO::Handle' => '0',
@@ -70,7 +71,7 @@ my $static_prereqs = do { my $x = {
                                       'Pod::Coverage::TrustPod' => '0',
                                       'Test::CPAN::Changes' => '0.19',
                                       'Test::CPAN::Meta' => '0',
-                                      'Test::CleanNamespaces' => '0',
+                                      'Test::CleanNamespaces' => '>= 0.04, != 0.06',
                                       'Test::Kwalitee' => '1.12',
                                       'Test::More' => '0.94',
                                       'Test::NoTabs' => '0',
@@ -83,6 +84,7 @@ my $static_prereqs = do { my $x = {
                       'requires' => {
                                       'Dist::Zilla::Plugin::MakeMaker::Awesome' => '0.13',
                                       'Dist::Zilla::Role::AfterBuild' => '0',
+                                      'List::Util' => '0',
                                       'Moose' => '0',
                                       'namespace::autoclean' => '0',
                                       'perl' => '5.006',
@@ -103,7 +105,6 @@ my $static_prereqs = do { my $x = {
                                    'File::Find' => '0',
                                    'File::Spec' => '0',
                                    'File::Spec::Functions' => '0',
-                                   'List::Util' => '0',
                                    'Path::Tiny' => '0',
                                    'Test::DZil' => '0',
                                    'Test::Deep' => '0',
