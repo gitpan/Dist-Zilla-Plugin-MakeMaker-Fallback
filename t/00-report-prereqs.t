@@ -51,10 +51,10 @@ my $static_prereqs = do { my $x = {
                       },
        'develop' => {
                       'recommends' => {
-                                        'Dist::Zilla::PluginBundle::Author::ETHER' => '0.052'
+                                        'Dist::Zilla::PluginBundle::Author::ETHER' => '0.053'
                                       },
                       'requires' => {
-                                      'Dist::Zilla' => '5.013',
+                                      'Dist::Zilla' => '5.014',
                                       'Dist::Zilla::Plugin::Bootstrap::lib' => '0',
                                       'Dist::Zilla::Plugin::GitHub::Update' => '0',
                                       'Dist::Zilla::Plugin::GithubMeta' => '0',
@@ -108,8 +108,10 @@ my $static_prereqs = do { my $x = {
                                    'Path::Tiny' => '0',
                                    'Test::DZil' => '0',
                                    'Test::Deep' => '0',
+                                   'Test::Deep::JSON' => '0',
                                    'Test::Fatal' => '0',
                                    'Test::More' => '0',
+                                   'Test::Requires' => '0',
                                    'if' => '0'
                                  }
                  }

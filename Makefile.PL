@@ -99,11 +99,13 @@ my %WriteMakefileArgs = (
     "Path::Tiny" => 0,
     "Test::DZil" => 0,
     "Test::Deep" => 0,
+    "Test::Deep::JSON" => 0,
     "Test::Fatal" => 0,
     "Test::More" => 0,
+    "Test::Requires" => 0,
     "if" => 0
   },
-  "VERSION" => "0.007",
+  "VERSION" => "0.008",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -124,8 +126,10 @@ my %FallbackPrereqs = (
   "Path::Tiny" => 0,
   "Test::DZil" => 0,
   "Test::Deep" => 0,
+  "Test::Deep::JSON" => 0,
   "Test::Fatal" => 0,
   "Test::More" => 0,
+  "Test::Requires" => 0,
   "if" => 0,
   "namespace::autoclean" => 0,
   "strict" => 0,
