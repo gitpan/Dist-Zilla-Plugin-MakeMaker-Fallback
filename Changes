@@ -1,5 +1,9 @@
 Revision history for Dist-Zilla-Plugin-MakeMaker-Fallback
 
+0.009     2014-03-24 03:52:26Z
+          - fix test which should be skipped when an optional prereq is not
+            present
+
 0.008     2014-03-23 02:43:22Z
           - properly dump configs by resolving silent role composition sub
             clobbering issue

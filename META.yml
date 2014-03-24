@@ -31,12 +31,10 @@ no_index:
   directory:
     - t
     - xt
-    - examples
-    - share
 provides:
   Dist::Zilla::Plugin::MakeMaker::Fallback:
     file: lib/Dist/Zilla/Plugin/MakeMaker/Fallback.pm
-    version: '0.008'
+    version: '0.009'
 requires:
   Dist::Zilla::Plugin::MakeMaker::Awesome: '0.13'
   Dist::Zilla::Role::AfterBuild: '0'
@@ -53,7 +51,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-MakeMaker-Fallback
   homepage: https://github.com/karenetheridge/Dist-Zilla-Plugin-MakeMaker-Fallback
   repository: https://github.com/karenetheridge/Dist-Zilla-Plugin-MakeMaker-Fallback.git
-version: '0.008'
+version: '0.009'
 x_Dist_Zilla:
   perl:
     version: '5.019009'
@@ -106,7 +104,7 @@ x_Dist_Zilla:
           phase: build
           skip: []
       name: '@Author::ETHER/build'
-      version: '0.020'
+      version: '0.021'
     -
       class: Dist::Zilla::Plugin::PromptIfStale
       config:
@@ -117,7 +115,7 @@ x_Dist_Zilla:
           phase: release
           skip: []
       name: '@Author::ETHER/release'
-      version: '0.020'
+      version: '0.021'
     -
       class: Dist::Zilla::Plugin::ExecDir
       name: '@Author::ETHER/ExecDir'
@@ -414,9 +412,9 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::RunExtraTests
       config:
         Dist::Zilla::Role::TestRunner:
-          default_jobs: 1
+          default_jobs: 9
       name: '@Author::ETHER/RunExtraTests'
-      version: '0.018'
+      version: '0.020'
     -
       class: Dist::Zilla::Plugin::InstallGuide
       name: '@Author::ETHER/InstallGuide'

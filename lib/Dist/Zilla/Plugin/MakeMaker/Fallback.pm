@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::MakeMaker::Fallback;
 BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.007-2-g3d04689
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.008';
+# git description: v0.008-1-g11d068a
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.009';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # vim: set ts=8 sw=4 tw=78 et :
 
@@ -221,7 +221,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.008
+version 0.009
 
 =head1 SYNOPSIS
 

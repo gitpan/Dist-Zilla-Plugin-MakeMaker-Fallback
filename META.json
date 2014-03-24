@@ -16,9 +16,7 @@
    "no_index" : {
       "directory" : [
          "t",
-         "xt",
-         "examples",
-         "share"
+         "xt"
       ]
    },
    "prereqs" : {
@@ -30,7 +28,7 @@
       },
       "develop" : {
          "recommends" : {
-            "Dist::Zilla::PluginBundle::Author::ETHER" : "0.053"
+            "Dist::Zilla::PluginBundle::Author::ETHER" : "0.054"
          },
          "requires" : {
             "Dist::Zilla" : "5.014",
@@ -98,7 +96,7 @@
    "provides" : {
       "Dist::Zilla::Plugin::MakeMaker::Fallback" : {
          "file" : "lib/Dist/Zilla/Plugin/MakeMaker/Fallback.pm",
-         "version" : "0.008"
+         "version" : "0.009"
       }
    },
    "release_status" : "stable",
@@ -116,7 +114,7 @@
       "x_IRC" : "irc://irc.perl.org/#distzilla",
       "x_MailingList" : "http://dzil.org/#mailing-list"
    },
-   "version" : "0.008",
+   "version" : "0.009",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.019009"
@@ -187,7 +185,7 @@
                }
             },
             "name" : "@Author::ETHER/build",
-            "version" : "0.020"
+            "version" : "0.021"
          },
          {
             "class" : "Dist::Zilla::Plugin::PromptIfStale",
@@ -201,7 +199,7 @@
                }
             },
             "name" : "@Author::ETHER/release",
-            "version" : "0.020"
+            "version" : "0.021"
          },
          {
             "class" : "Dist::Zilla::Plugin::ExecDir",
@@ -584,11 +582,11 @@
             "class" : "Dist::Zilla::Plugin::RunExtraTests",
             "config" : {
                "Dist::Zilla::Role::TestRunner" : {
-                  "default_jobs" : 1
+                  "default_jobs" : 9
                }
             },
             "name" : "@Author::ETHER/RunExtraTests",
-            "version" : "0.018"
+            "version" : "0.020"
          },
          {
             "class" : "Dist::Zilla::Plugin::InstallGuide",
