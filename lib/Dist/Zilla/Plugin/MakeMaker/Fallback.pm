@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::MakeMaker::Fallback;
 BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.008-1-g11d068a
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.009';
+# git description: v0.009-8-gb3d1666
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.010';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # vim: set ts=8 sw=4 tw=78 et :
 
@@ -82,6 +82,10 @@ CODE
 
     my $string = $self->$orig(@_);
 
+    # strip out the hard VERSION requirement - be gentle to users that failed
+    # to satisfy configure_requires
+    $string =~ s/^use ExtUtils::MakeMaker\K \N+;$/;/m;
+
     # splice in our stuff after the preamble bits
     $string =~ m/use warnings;\n\n/g;
     return substr($string, 0, pos($string)) . $code . substr($string, pos($string));
@@ -99,6 +103,7 @@ sub test
 
         local $ENV{RELEASE_TESTING};
         local $ENV{AUTHOR_TESTING};
+        $self->log_debug('performing test with RELEASE_TESTING, AUTHOR_TESTING unset');
         return $self->next::method(@_);
     }
 
@@ -126,6 +131,8 @@ __PACKAGE__->meta->make_immutable;
 #pod your dist, with an added preamble that is printed when it is run:
 #pod
 #pod =over 4
+#pod
+#pod =for stopwords cpanminus mb
 #pod
 #pod =for comment This section was inserted from the DATA section at build time
 #pod
@@ -204,16 +211,11 @@ __PACKAGE__->meta->make_immutable;
 #pod
 #pod =end :list
 #pod
-#pod =for stopwords cpanminus mb
-#pod
 #pod =cut
 
 =pod
 
 =encoding UTF-8
-
-=for :stopwords Karen Etheridge functionalities ModuleBuildTiny irc Peter Rabbitson
-ribasushi Matt Trout mst cpanminus mb
 
 =head1 NAME
 
@@ -221,7 +223,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.009
+version 0.010
 
 =head1 SYNOPSIS
 
@@ -240,6 +242,8 @@ your dist, with an added preamble that is printed when it is run:
 =over 4
 
 =for Pod::Coverage after_build build test
+
+=for stopwords cpanminus mb
 
 =for comment This section was inserted from the DATA section at build time
 
@@ -277,6 +281,8 @@ PERL_MM_FALLBACK_SILENCE_WARNING environment variable.
 
 =back
 
+=for stopwords functionalities ModuleBuildTiny
+
 Additionally, the C<build> and C<test> functionalities of the plugin
 (C<< perl Makefile.PL && make >> and C<< make test >> respectively) are
 disabled, making it convenient to develop under multiple installer plugins,
@@ -288,11 +294,15 @@ L<[ModuleBuildTiny]|Dist::Zilla::Plugin::ModuleBuildTiny>).
 
 =head1 SUPPORT
 
+=for stopwords irc
+
 Bugs may be submitted through L<the RT bug tracker|https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-MakeMaker-Fallback>
 (or L<bug-Dist-Zilla-Plugin-MakeMaker-Fallback@rt.cpan.org|mailto:bug-Dist-Zilla-Plugin-MakeMaker-Fallback@rt.cpan.org>).
 I am also usually active on irc, as 'ether' at C<irc.perl.org>.
 
 =head1 ACKNOWLEDGEMENTS
+
+=for stopwords Peter Rabbitson ribasushi Matt Trout mst
 
 Peter Rabbitson (ribasushi), whose concerns that low-level utility modules
 were shipping with install tools that did not work out of the box with perls

@@ -7,8 +7,7 @@ use Test::Fatal;
 use Test::DZil;
 use Test::Deep;
 use Path::Tiny;
-use File::Find;
-use File::Spec;
+use Capture::Tiny 'capture';
 
 {
     package Dist::Zilla::Plugin::BogusInstaller;
@@ -59,12 +58,11 @@ use File::Spec;
     );
 
     my @found_files;
-    find({
-            wanted => sub { push @found_files, File::Spec->abs2rel($_, $build_dir) if -f  },
-            no_chdir => 1,
-         },
-        $build_dir,
-    );
+    my $iter = $build_dir->iterator({ recurse => 1 });
+    while (my $path = $iter->())
+    {
+        push @found_files, $path->relative($build_dir)->stringify if -f $path;
+    }
 
     cmp_deeply(
         \@found_files,
@@ -78,6 +76,26 @@ use File::Spec;
     my $preamble = join('', <*Dist::Zilla::Plugin::MakeMaker::Fallback::DATA>);
 
     like($Makefile_PL_content, qr/\Q$preamble\E/ms, 'preamble is found in makefile');
+
+    unlike(
+        $Makefile_PL_content,
+        qr/use\s+ExtUtils::MakeMaker\s/m,
+        'ExtUtils::MakeMaker not used with VERSION',
+    );
+
+    like(
+        $Makefile_PL_content,
+        qr/^use ExtUtils::MakeMaker;$/m,
+        'ExtUtils::MakeMaker is still used',
+    );
+
+    subtest 'ExtUtils::MakeMaker->VERSION not asserted (outside of an eval) either' => sub {
+        while ($Makefile_PL_content =~ /^(.*)ExtUtils::MakeMaker\s*->\s*VERSION\s*\(\s*([\d._]+)\s*\)/mg)
+        {
+            like($1, qr/eval/, 'VERSION assertion (on ' . $2 . ') done inside an eval');
+        }
+        pass;
+    };
 }
 
 {
@@ -96,15 +114,24 @@ use File::Spec;
         },
     );
 
-    $tzil->test;
+    $tzil->chrome->logger->set_debug(1);
+    my ($stdout, $stderr, @result) = capture {
+        local $ENV{RELEASE_TESTING};
+        local $ENV{AUTHOR_TESTING};
+        $tzil->test;
+    };
+
+    $stdout =~ s/^/    /gm;
+    print $stdout;
 
     cmp_deeply(
         $tzil->log_messages,
         superbagof(
+            re(qr/\Q[MakeMaker::Fallback] doing nothing during test...\E/),
             re(qr/all's well/),
         ),
-       'the test method does not die',
-    );
+        'the test method does not die; correct diagnostics printed',
+    ) or diag 'saw log messages: ', explain $tzil->log_messages;
 }
 
 done_testing;

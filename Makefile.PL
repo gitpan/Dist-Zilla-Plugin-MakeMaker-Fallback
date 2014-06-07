@@ -9,7 +9,7 @@ use warnings;
 BEGIN {
 my %configure_requires = (
     'ExtUtils::MakeMaker' => '6.30',
-    'Module::Build::Tiny' => '0.035',
+    'Module::Build::Tiny' => '0.036',
 );
 
 my @missing = grep {
@@ -61,9 +61,9 @@ EOW
 }
 }
 
-use 5.006;
+use 5.011;
 
-use ExtUtils::MakeMaker 6.30;
+use ExtUtils::MakeMaker;
 
 
 
@@ -73,7 +73,7 @@ my %WriteMakefileArgs = (
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30",
-    "Module::Build::Tiny" => "0.035"
+    "Module::Build::Tiny" => "0.036"
   },
   "DISTNAME" => "Dist-Zilla-Plugin-MakeMaker-Fallback",
   "EXE_FILES" => [],
@@ -90,11 +90,10 @@ my %WriteMakefileArgs = (
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
+    "Capture::Tiny" => 0,
     "Dist::Zilla::Plugin::ModuleBuildTiny" => 0,
     "Dist::Zilla::Role::InstallTool" => 0,
     "ExtUtils::MakeMaker" => 0,
-    "File::Find" => 0,
-    "File::Spec" => 0,
     "File::Spec::Functions" => 0,
     "Path::Tiny" => 0,
     "Test::DZil" => 0,
@@ -105,7 +104,7 @@ my %WriteMakefileArgs = (
     "Test::Requires" => 0,
     "if" => 0
   },
-  "VERSION" => "0.009",
+  "VERSION" => "0.010",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -113,13 +112,12 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Capture::Tiny" => 0,
   "Dist::Zilla::Plugin::MakeMaker::Awesome" => "0.13",
   "Dist::Zilla::Plugin::ModuleBuildTiny" => 0,
   "Dist::Zilla::Role::AfterBuild" => 0,
   "Dist::Zilla::Role::InstallTool" => 0,
   "ExtUtils::MakeMaker" => 0,
-  "File::Find" => 0,
-  "File::Spec" => 0,
   "File::Spec::Functions" => 0,
   "List::Util" => 0,
   "Moose" => 0,
