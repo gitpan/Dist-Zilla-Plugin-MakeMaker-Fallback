@@ -4,9 +4,10 @@ package Dist::Zilla::Plugin::MakeMaker::Fallback;
 BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.009-8-gb3d1666
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.010';
+# git description: v0.010-6-g13b049d
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.011';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
+# KEYWORDS: plugin installer MakeMaker Makefile.PL toolchain legacy ancient backcompat
 # vim: set ts=8 sw=4 tw=78 et :
 
 use Moose;
@@ -49,21 +50,19 @@ around _build_MakeFile_PL_template => sub
     my $orig = shift;
     my $self = shift;
 
-    my $configure_requires = $self->zilla->prereqs->as_string_hash->{configure}{requires};
+    my $code = <<'CODE'
+BEGIN {
+my %configure_requires = (
+{{
+    my $configure_requires = $dist->prereqs->as_string_hash->{configure}{requires};
 
     # prereq specifications don't always provide exact versions - we just weed
     # those out for now, as this shouldn't occur that frequently.
     delete @{$configure_requires}{ grep { not version::is_strict($configure_requires->{$_}) } keys %$configure_requires };
-
-    my $code = <<'CODE'
-BEGIN {
-my %configure_requires = (
-CODE
-        . join('', map {
-                "    '$_' => '$configure_requires->{$_}',\n"
-            } sort keys %$configure_requires)
-    . <<'CODE'
-);
+    join('', map {
+            "    '$_' => '$configure_requires->{$_}',\n"
+        } sort keys %$configure_requires)
+}});
 
 my @missing = grep {
     ! eval "require $_; $_->VERSION($configure_requires{$_}); 1"
@@ -207,7 +206,9 @@ __PACKAGE__->meta->make_immutable;
 #pod
 #pod =begin :list
 #pod
+#pod * L<Dist::Zilla::Plugin::MakeMaker>
 #pod * L<Dist::Zilla::Plugin::ModuleBuildTiny>
+#pod * L<Dist::Zilla::Plugin::ModuleBuildTiny::Fallback>
 #pod
 #pod =end :list
 #pod
@@ -223,7 +224,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.010
+version 0.011
 
 =head1 SYNOPSIS
 
@@ -319,7 +320,15 @@ for that...)
 
 =item *
 
+L<Dist::Zilla::Plugin::MakeMaker>
+
+=item *
+
 L<Dist::Zilla::Plugin::ModuleBuildTiny>
+
+=item *
+
+L<Dist::Zilla::Plugin::ModuleBuildTiny::Fallback>
 
 =back
 

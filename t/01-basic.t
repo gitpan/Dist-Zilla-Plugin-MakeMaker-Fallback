@@ -89,6 +89,29 @@ use Capture::Tiny 'capture';
         'ExtUtils::MakeMaker is still used',
     );
 
+    SKIP:
+    {
+        ok($Makefile_PL_content =~ /^my %configure_requires = \($/mg, 'found start of %configure_requires declaration')
+            or skip 'failed to test %configure_requires section', 2;
+        my $start = pos($Makefile_PL_content);
+
+        ok($Makefile_PL_content =~ /\);$/mg, 'found end of %configure_requires declaration')
+            or skip 'failed to test %configure_requires section', 1;
+        my $end = pos($Makefile_PL_content);
+
+        my $configure_requires_content = substr($Makefile_PL_content, $start, $end - $start - 2);
+
+        my %configure_requires = %{ $tzil->distmeta->{prereqs}{configure}{requires} };
+        foreach my $prereq (keys %configure_requires)
+        {
+            like(
+                $configure_requires_content,
+                qr/$prereq\W+$configure_requires{$prereq}/m,
+                "\%configure_requires contains $prereq => $configure_requires{$prereq}",
+            );
+        }
+    }
+
     subtest 'ExtUtils::MakeMaker->VERSION not asserted (outside of an eval) either' => sub {
         while ($Makefile_PL_content =~ /^(.*)ExtUtils::MakeMaker\s*->\s*VERSION\s*\(\s*([\d._]+)\s*\)/mg)
         {
@@ -96,42 +119,6 @@ use Capture::Tiny 'capture';
         }
         pass;
     };
-}
-
-{
-    my $tzil = Builder->from_config(
-        { dist_root => 't/does_not_exist' },
-        {
-            add_files => {
-                path(qw(source dist.ini)) => simple_ini(
-                    [ 'GatherDir' ],
-                    [ 'MakeMaker::Fallback' ],
-                    [ 'ModuleBuildTiny' ],
-                    [ 'MetaJSON' ],         # MBT requires a META.* file
-                ),
-                path(qw(source/t/test.t)) => "use Test::More tests => 1; pass('passing test');\n",
-            },
-        },
-    );
-
-    $tzil->chrome->logger->set_debug(1);
-    my ($stdout, $stderr, @result) = capture {
-        local $ENV{RELEASE_TESTING};
-        local $ENV{AUTHOR_TESTING};
-        $tzil->test;
-    };
-
-    $stdout =~ s/^/    /gm;
-    print $stdout;
-
-    cmp_deeply(
-        $tzil->log_messages,
-        superbagof(
-            re(qr/\Q[MakeMaker::Fallback] doing nothing during test...\E/),
-            re(qr/all's well/),
-        ),
-        'the test method does not die; correct diagnostics printed',
-    ) or diag 'saw log messages: ', explain $tzil->log_messages;
 }
 
 done_testing;
