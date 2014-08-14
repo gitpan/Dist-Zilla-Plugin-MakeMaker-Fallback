@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::MakeMaker::Fallback;
 BEGIN {
   $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.010-6-g13b049d
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.011';
+# git description: v0.011-4-g0c6e455
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.012';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # KEYWORDS: plugin installer MakeMaker Makefile.PL toolchain legacy ancient backcompat
 # vim: set ts=8 sw=4 tw=78 et :
@@ -50,10 +50,15 @@ around _build_MakeFile_PL_template => sub
     my $orig = shift;
     my $self = shift;
 
-    my $code = <<'CODE'
+    # this module file gets passed through a template itself at build time, so
+    # we need to escape these template markers so they survive
+
+    my $code = <<"CODE"
 BEGIN {
 my %configure_requires = (
-{{
+\x7b\x7b  # look, it's a template inside a template!
+CODE
+. <<'CODE'
     my $configure_requires = $dist->prereqs->as_string_hash->{configure}{requires};
 
     # prereq specifications don't always provide exact versions - we just weed
@@ -62,7 +67,8 @@ my %configure_requires = (
     join('', map {
             "    '$_' => '$configure_requires->{$_}',\n"
         } sort keys %$configure_requires)
-}});
+CODE
+    . "\x7d\x7d);\n" . <<'CODE'
 
 my @missing = grep {
     ! eval "require $_; $_->VERSION($configure_requires{$_}); 1"
@@ -83,7 +89,7 @@ CODE
 
     # strip out the hard VERSION requirement - be gentle to users that failed
     # to satisfy configure_requires
-    $string =~ s/^use ExtUtils::MakeMaker\K \N+;$/;/m;
+    $string =~ s/^use ExtUtils::MakeMaker\K[^\n]+;$/;/m;
 
     # splice in our stuff after the preamble bits
     $string =~ m/use warnings;\n\n/g;
@@ -224,7 +230,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.011
+version 0.012
 
 =head1 SYNOPSIS
 

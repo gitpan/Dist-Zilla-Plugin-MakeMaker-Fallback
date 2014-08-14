@@ -1,5 +1,11 @@
 Revision history for Dist-Zilla-Plugin-MakeMaker-Fallback
 
+0.012     2014-08-14 02:03:30Z
+          - fix munging of "use ExtUtils::MakeMaker <version>" since
+            [MakeMaker::Awesome] version 0.22 changed the template
+          - lower minimum version of perl required by removing a use of \N in
+            a regular expression
+
 0.011     2014-08-07 02:27:53Z
           - properly include %configure_requires content in Makefile.PL
             (broken under Dist::Zilla::Plugin::MakeMaker::Awesome 0.23,
