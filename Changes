@@ -1,5 +1,10 @@
 Revision history for Dist-Zilla-Plugin-MakeMaker-Fallback
 
+0.013     2014-08-16 00:02:55Z
+          - fix test from previous release's fix that was incompatible with
+            earlier versions of [MakeMaker]'s practice of always setting
+            eumm_version
+
 0.012     2014-08-14 02:03:30Z
           - fix munging of "use ExtUtils::MakeMaker <version>" since
             [MakeMaker::Awesome] version 0.22 changed the template

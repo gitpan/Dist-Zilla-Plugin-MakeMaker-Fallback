@@ -64,7 +64,7 @@ EOW
         "Karen Etheridge <ether\@cpan.org>"
       ],
       "dist_name" => "Dist-Zilla-Plugin-MakeMaker-Fallback",
-      "dist_version" => "0.012",
+      "dist_version" => "0.013",
       "license" => "perl",
       "module_name" => "Dist::Zilla::Plugin::MakeMaker::Fallback",
       "recommends" => {},

@@ -1,7 +1,7 @@
 
 
 This archive contains the distribution Dist-Zilla-Plugin-MakeMaker-Fallback,
-version 0.012:
+version 0.013:
 
   Generate a Makefile.PL containing a warning for legacy users
 
