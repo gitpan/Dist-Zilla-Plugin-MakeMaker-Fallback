@@ -1,11 +1,8 @@
 use strict;
 use warnings;
 package Dist::Zilla::Plugin::MakeMaker::Fallback;
-BEGIN {
-  $Dist::Zilla::Plugin::MakeMaker::Fallback::AUTHORITY = 'cpan:ETHER';
-}
-# git description: v0.012-1-g26368c0
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.013';
+# git description: v0.013-3-ge2749d5
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.014';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # KEYWORDS: plugin installer MakeMaker Makefile.PL toolchain legacy ancient backcompat
 # vim: set ts=8 sw=4 tw=78 et :
@@ -60,6 +57,7 @@ my %configure_requires = (
 CODE
 . <<'CODE'
     my $configure_requires = $dist->prereqs->as_string_hash->{configure}{requires};
+    delete $configure_requires->{perl};
 
     # prereq specifications don't always provide exact versions - we just weed
     # those out for now, as this shouldn't occur that frequently.
@@ -111,8 +109,10 @@ sub test
         $self->log_debug('performing test with RELEASE_TESTING, AUTHOR_TESTING unset');
         return $self->next::method(@_);
     }
-
-    $self->log_debug('doing nothing during test...');
+    else
+    {
+        $self->log_debug('doing nothing during test...');
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -176,16 +176,17 @@ __PACKAGE__->meta->make_immutable;
 #pod
 #pod =back
 #pod
-#pod =for stopwords functionalities ModuleBuildTiny
-#pod
-#pod Additionally, the C<build> and C<test> functionalities of the plugin
-#pod (C<< perl Makefile.PL && make >> and C<< make test >> respectively) are
-#pod disabled, making it convenient to develop under multiple installer plugins,
-#pod without C<dzil test> running tests twice.
+#pod =for stopwords ModuleBuildTiny
 #pod
 #pod It is a fatal error to use this plugin when there is not also another
 #pod plugin enabled that generates a F<Build.PL> (such as
 #pod L<[ModuleBuildTiny]|Dist::Zilla::Plugin::ModuleBuildTiny>).
+#pod
+#pod On top of the regular testing that is provided via the F<Build.PL>-producing
+#pod plugin, C<dzil test --release> or C<dzil release> will run tests with extra
+#pod testing variables B<unset> (C<AUTHOR_TESTING>, C<RELEASE_TESTING>). This is to
+#pod weed out test issues that only manifest under these conditions (for example:
+#pod bad test count, conditional module loading).
 #pod
 #pod =head1 SUPPORT
 #pod
@@ -210,13 +211,10 @@ __PACKAGE__->meta->make_immutable;
 #pod
 #pod =head1 SEE ALSO
 #pod
-#pod =begin :list
-#pod
+#pod =for :list
 #pod * L<Dist::Zilla::Plugin::MakeMaker>
 #pod * L<Dist::Zilla::Plugin::ModuleBuildTiny>
 #pod * L<Dist::Zilla::Plugin::ModuleBuildTiny::Fallback>
-#pod
-#pod =end :list
 #pod
 #pod =cut
 
@@ -230,7 +228,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.013
+version 0.014
 
 =head1 SYNOPSIS
 
@@ -288,16 +286,17 @@ PERL_MM_FALLBACK_SILENCE_WARNING environment variable.
 
 =back
 
-=for stopwords functionalities ModuleBuildTiny
-
-Additionally, the C<build> and C<test> functionalities of the plugin
-(C<< perl Makefile.PL && make >> and C<< make test >> respectively) are
-disabled, making it convenient to develop under multiple installer plugins,
-without C<dzil test> running tests twice.
+=for stopwords ModuleBuildTiny
 
 It is a fatal error to use this plugin when there is not also another
 plugin enabled that generates a F<Build.PL> (such as
 L<[ModuleBuildTiny]|Dist::Zilla::Plugin::ModuleBuildTiny>).
+
+On top of the regular testing that is provided via the F<Build.PL>-producing
+plugin, C<dzil test --release> or C<dzil release> will run tests with extra
+testing variables B<unset> (C<AUTHOR_TESTING>, C<RELEASE_TESTING>). This is to
+weed out test issues that only manifest under these conditions (for example:
+bad test count, conditional module loading).
 
 =head1 SUPPORT
 
