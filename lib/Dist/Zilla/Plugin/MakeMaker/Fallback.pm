@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 package Dist::Zilla::Plugin::MakeMaker::Fallback;
-# git description: v0.014-6-g42a78f6
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.015';
+# git description: v0.015-1-g1a9fefb
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.016';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # KEYWORDS: plugin installer MakeMaker Makefile.PL toolchain legacy ancient backcompat
 # vim: set ts=8 sw=4 tw=78 et :
 
 use Moose;
-extends 'Dist::Zilla::Plugin::MakeMaker::Awesome' => { -version => '0.13' };
+extends 'Dist::Zilla::Plugin::MakeMaker::Awesome' => { -version => '0.15' };
 with 'Dist::Zilla::Role::AfterBuild' => { -excludes => 'dump_config' };
 
 use List::Util 'first';
@@ -234,7 +234,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.015
+version 0.016
 
 =head1 SYNOPSIS
 
