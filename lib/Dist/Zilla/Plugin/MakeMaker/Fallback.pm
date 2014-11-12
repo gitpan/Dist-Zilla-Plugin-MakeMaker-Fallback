@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 package Dist::Zilla::Plugin::MakeMaker::Fallback;
-# git description: v0.013-3-ge2749d5
-$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.014';
+# git description: v0.014-6-g42a78f6
+$Dist::Zilla::Plugin::MakeMaker::Fallback::VERSION = '0.015';
 # ABSTRACT: Generate a Makefile.PL containing a warning for legacy users
 # KEYWORDS: plugin installer MakeMaker Makefile.PL toolchain legacy ancient backcompat
 # vim: set ts=8 sw=4 tw=78 et :
@@ -29,6 +29,12 @@ use namespace::autoclean;
 #
 #    return $config;
 #};
+
+sub register_prereqs
+{
+    # block ExtUtils::MakeMaker from being added, since technically it should
+    # only be getting run if configure_requires is *not* being respected
+}
 
 sub after_build
 {
@@ -228,7 +234,7 @@ Dist::Zilla::Plugin::MakeMaker::Fallback - Generate a Makefile.PL containing a w
 
 =head1 VERSION
 
-version 0.014
+version 0.015
 
 =head1 SYNOPSIS
 

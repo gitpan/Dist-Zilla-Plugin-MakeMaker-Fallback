@@ -29,11 +29,15 @@ use Capture::Tiny 'capture';
         },
     );
 
+    $tzil->chrome->logger->set_debug(1);
     like(
         exception { $tzil->build },
         qr/\Q[MakeMaker::Fallback] No Build.PL found to fall back from!\E/,
         'build aborted when no additional installer is provided',
     );
+
+    diag 'got log messages: ', explain $tzil->log_messages
+        if not Test::Builder->new->is_passing;
 }
 
 foreach my $eumm_version ('6.00', '0')
@@ -54,7 +58,28 @@ foreach my $eumm_version ('6.00', '0')
         },
     );
 
-    $tzil->build;
+    $tzil->chrome->logger->set_debug(1);
+    is(
+        exception { $tzil->build },
+        undef,
+        'build proceeds normally',
+    );
+
+    cmp_deeply(
+        $tzil->distmeta,
+        superhashof({
+            prereqs => superhashof({
+                configure => {
+                    requires => {
+                        'Module::Build::Tiny' => ignore,
+                        'perl' => '5.006',
+                    },
+                },
+            }),
+        }),
+        'ExtUtils::MakeMaker is not included in configure requires',
+    ) or diag 'got metadata: ', explain $tzil->distmeta;
+
     my $build_dir = path($tzil->tempdir)->child('build');
 
     my @expected_files = qw(
@@ -78,13 +103,24 @@ foreach my $eumm_version ('6.00', '0')
     my $Makefile_PL = path($tzil->tempdir)->child('build', 'Makefile.PL');
     my $Makefile_PL_content = $Makefile_PL->slurp_utf8;
 
-    my $preamble = join('', <*Dist::Zilla::Plugin::MakeMaker::Fallback::DATA>);
+    unlike($Makefile_PL_content, qr/[^\S\n]\n/m, 'no trailing whitespace in generated Makefile.PL');
 
-    like($Makefile_PL_content, qr/\Q$preamble\E/ms, 'preamble is found in makefile');
+    my $preamble = join('', <*Dist::Zilla::Plugin::MakeMaker::Fallback::DATA>);
+    like($Makefile_PL_content, qr/\Q$preamble\E/ms, 'preamble is found in Makefile.PL');
+
+    like(
+        $Makefile_PL_content,
+        qr/^# This Makefile\.PL for .*
+^# Don't edit it but the dist\.ini .*
+
+^use strict;
+^use warnings;/ms,
+        'header is present',
+    );
 
     unlike(
         $Makefile_PL_content,
-        qr/use\s+ExtUtils::MakeMaker\s/m,
+        qr/^[^#]*use\s+ExtUtils::MakeMaker\s/m,
         'ExtUtils::MakeMaker not used with VERSION (when '
             . ($eumm_version ? 'a' : 'no')
             . ' eumm_version was specified)',
@@ -130,7 +166,6 @@ foreach my $eumm_version ('6.00', '0')
                 );
             }
         }
-        is($configure_requires{'ExtUtils::MakeMaker'}, $eumm_version // 0, 'correct EUMM version in prereqs');
     }
 
     subtest 'ExtUtils::MakeMaker->VERSION not asserted (outside of an eval) either' => sub {
@@ -140,6 +175,9 @@ foreach my $eumm_version ('6.00', '0')
         }
         pass 'no-op';
     };
+
+    diag 'got log messages: ', explain $tzil->log_messages
+        if not Test::Builder->new->is_passing;
 }
 
 done_testing;

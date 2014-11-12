@@ -108,7 +108,7 @@ do { my $x = {
                                       'List::Util' => '0',
                                       'Moose' => '0',
                                       'namespace::autoclean' => '0',
-                                      'perl' => '5.010',
+                                      'perl' => '5.009005',
                                       'strict' => '0',
                                       'version' => '0',
                                       'warnings' => '0'
@@ -131,7 +131,7 @@ do { my $x = {
                                    'Test::More' => '0',
                                    'Test::Requires' => '0',
                                    'if' => '0',
-                                   'perl' => '5.010'
+                                   'perl' => '5.009005'
                                  }
                  }
      };

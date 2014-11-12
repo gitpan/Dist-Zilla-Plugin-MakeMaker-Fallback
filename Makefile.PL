@@ -61,7 +61,7 @@ EOW
 }
 }
 
-use 5.010;
+use 5.009005;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
@@ -74,7 +74,7 @@ my %WriteMakefileArgs = (
   "DISTNAME" => "Dist-Zilla-Plugin-MakeMaker-Fallback",
   "EXE_FILES" => [],
   "LICENSE" => "perl",
-  "MIN_PERL_VERSION" => "5.010",
+  "MIN_PERL_VERSION" => "5.009005",
   "NAME" => "Dist::Zilla::Plugin::MakeMaker::Fallback",
   "PREREQ_PM" => {
     "Dist::Zilla::Plugin::MakeMaker::Awesome" => "0.13",
@@ -100,7 +100,7 @@ my %WriteMakefileArgs = (
     "Test::Requires" => 0,
     "if" => 0
   },
-  "VERSION" => "0.014",
+  "VERSION" => "0.015",
   "test" => {
     "TESTS" => "t/*.t"
   }

@@ -1,5 +1,10 @@
 Revision history for Dist-Zilla-Plugin-MakeMaker-Fallback
 
+0.015     2014-11-12 03:53:50Z
+          - remove configure requires declarations added for Makefile.PL
+            (technically they are only needed when configure requires is
+            already not being respected)
+
 0.014     2014-10-29 02:44:49Z
           - document the double testing behaviour that changed with version
             0.007 (thanks for noticing, Apocalypse!)
